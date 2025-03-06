@@ -28,8 +28,19 @@ exports.addItem = async(req, res) => {
         const {Title, Description, Status, Timestamps} = req.body;
         const newItem = new todoList({Title, Description, Status, Timestamps});
         await newItem.save();
-        res.status(201).json({ message: "Item successfully updated"})
+        res.status(201).json({ message: "Item added successfully"})
     } catch (error) {
-        res.status(500).json({message: "Error updating Item"});
+        res.status(500).json({message: "Error adding an item"});
     }
 };
+
+// 
+exports.updateId = async(req, res) => {
+    try {
+        const updatedItem = await todoList.findByIdAndUpdate(req.params.id, req.body, { new: true});
+        if(!updatedItem) return res.status(404).json({ message: "Item not found"});
+        res.json(updatedItem);
+    } catch (error) {
+        res.status(500).json({message : 'Error updating Item'})
+    }
+}
