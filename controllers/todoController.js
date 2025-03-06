@@ -25,10 +25,10 @@ exports.getItemsbyId = async (req, res) => {
 //Adding an item to the database using the POST method
 exports.addItem = async (req, res) => {
     try {
-        const { Title, Description, Status, Timestamps } = req.body;
-        const newItem = new todoList({ Title, Description, Status, Timestamps });
+        const { Title, Description, Status } = req.body;
+        const newItem = new todoList({ Title, Description, Status });
         await newItem.save();
-        res.status(201).json({ message: "Item added successfully" })
+        res.status(201).json({ message: "Item added successfully", item: newItem })
     } catch (error) {
         res.status(500).json({ message: "Error adding an item", error });
     }
