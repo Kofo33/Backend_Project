@@ -28,6 +28,7 @@ exports.addItem = async (req, res) => {
     //Validating the user's input before saving to the database
     const { error, value } = taskSchema.validate(req.body);
     if (error) return res.status(400).json({ message: error.details[0].message });
+
     try {
         const newItem = new todoList(value); //Using the validated data
         await newItem.save();
@@ -40,8 +41,9 @@ exports.addItem = async (req, res) => {
 //Updating an item using PUT Method
 exports.updateId = async (req, res) => {
     //Validating the updates before applying them
-    const { error, value } = taskSchema.validate(req.body, { allowUnknown: true }); //allowUnknown: true, lets the user update only the necessary fields instead of needing the full object.
+    const { error, value } = taskSchema.validate(req.body); 
     if (error) return res.status(400).json({ message: error.details[0].message });
+
     try {
         const updatedItem = await todoList.findByIdAndUpdate(req.params.id, value, { new: true });
         if (!updatedItem) return res.status(404).json({ message: "Item not found" });
@@ -51,7 +53,7 @@ exports.updateId = async (req, res) => {
     }
 };
 
-//Deleting information from the database using DELETE Request
+//Deleting an item from the database using DELETE Request
 exports.deleteItem = async (req, res) => {
     try {
         const deletedItem = await todoList.findByIdAndDelete(req.params.id);
