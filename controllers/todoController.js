@@ -1,5 +1,6 @@
 // Import the to_doModel to use
 const todoList = require('../models/to_doModel');
+const taskSchema = require('../validations/todoValidations');
 
 //Fetching all the items on the list from the database
 exports.getItems = async (req, res) => {
@@ -24,9 +25,11 @@ exports.getItemsbyId = async (req, res) => {
 
 //Adding an item to the database using the POST method
 exports.addItem = async (req, res) => {
+    //Validating the user's input before saving to the database
+    const { error, value } = taskSchema.validate(req.body);
+    if (error) return res.status(400).json({ message: error.details[0].message });
     try {
-        const { Title, Description, Status } = req.body;
-        const newItem = new todoList({ Title, Description, Status });
+        const newItem = new todoList(value); //Using the validated data
         await newItem.save();
         res.status(201).json({ message: "Item added successfully", item: newItem })
     } catch (error) {
@@ -36,8 +39,11 @@ exports.addItem = async (req, res) => {
 
 //Updating an item using PUT Method
 exports.updateId = async (req, res) => {
+    //Validating the updates before applying them
+    const { error, value } = taskSchema.validate(req.body, { allowUnknown: true }); //allowUnknown: true, lets the user update only the necessary fields instead of needing the full object.
+    if (error) return res.status(400).json({ message: error.details[0].message });
     try {
-        const updatedItem = await todoList.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const updatedItem = await todoList.findByIdAndUpdate(req.params.id, value, { new: true });
         if (!updatedItem) return res.status(404).json({ message: "Item not found" });
         res.json(updatedItem);
     } catch (error) {
