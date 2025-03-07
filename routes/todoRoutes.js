@@ -4,10 +4,10 @@ const router = express.Router();
 const todoController = require("../controllers/todoController");
 
 //Creates routes to GET, POST, PUT & DELETE Items from the database.
-router.get('/api', todoController.getItems);
-router.get('/api/:id', todoController.getItemsbyId);
-router.post('/api', todoController.addItem);
-router.put('/api/:id', todoController.updateId);
-router.delete('/api/:id', todoController.deleteItem);
+router.get('/', todoController.getItems);
+router.get('/:id', todoController.getItemsbyId);
+router.post('/', todoController.addItem);
+router.put('/:id', todoController.updateId);
+router.delete('/:id', todoController.deleteItem);
 
 module.exports = router;
